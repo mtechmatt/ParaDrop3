@@ -4,9 +4,9 @@ void Bullet::Update(float dt)
 {
 	/* Given that we have our starting point set, and our velicities, lets move by the amount specified. */
 		
-
-	if ((posX < 5) || (posX > (Graphics::ScreenWidth - 5)) || (posY < 5)) {
+	if ((posX < 5) || (posX > (Graphics::ScreenWidth - 5)) || (posY < 5) || (posY > Graphics::ScreenHeight)) {
 		isActive = false;  //Disable this bullet
+		return;
 	}
 
 	/* If we are active, compute our movement */
@@ -41,8 +41,5 @@ void Bullet::Create(int inposX, int inposY, int firingAngle)
 void Bullet::Draw(Graphics & gfx) const
 {
 	/* Draw us on the screen */
-	if (isActive) {
-		gfx.DrawCircle((int)posX, (int)posY, 2, Colors::Green);
-	}
-	
+	gfx.DrawCircle((int)posX, (int)posY, 2, Colors::Green);	
 }

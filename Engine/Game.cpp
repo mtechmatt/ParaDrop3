@@ -35,7 +35,9 @@ Game::Game( MainWindow& wnd )
 	//pad( Vec2( 400.0f,550.0f ),32.0f,6.0f ),
 	//lifeCounter( { 30.0f,30.0f },3 )
 {
-	
+	for (int i = 0; i < MaxBullets; i++) {	/* Prep the bullets */
+		bullets[i].isActive = false;
+	}
 }
 
 void Game::Go()
@@ -43,9 +45,11 @@ void Game::Go()
 	gfx.BeginFrame();
 	float elapsedTime = ft.Mark();
 
+
+
 	while( elapsedTime > 0.0f )
 	{
-		const float dt = std::min( 0.0010f,elapsedTime );
+		const float dt = std::min( 0.011f,elapsedTime );
 		UpdateModel( dt );
 		elapsedTime -= dt;
 
@@ -56,28 +60,27 @@ void Game::Go()
 
 void Game::UpdateModel( float dt )
 {
-	if (gameState == playingWave1) {	/* We are playing the game */
-		/* check for I/O and move the gun if needed */
-		
-		for (int i=0; i < MaxBullets; i++) {
-			if (bullets[i].isActive) {
-			  bullets[i].Update(dt);
-			}	
-		}
-	}
 
 	if (wnd.kbd.KeyIsPressed(VK_SPACE)) {  /* TODO make this timer spaced */
-		bulletCounter++;
 		if (bulletCounter > MaxBullets) {
 			bulletCounter = 0;
 		}
 		bullets[bulletCounter].Create(gun.GetGunTipX(), gun.GetGunTipY(), gun.GetGunAngle()); /* Create/activate a bullet */
+		bulletCounter++;
 	}
+
 	if (wnd.kbd.KeyIsPressed(VK_RIGHT)) {
 		gun.UpdateGun(1, dt);
 	}
 	else if (wnd.kbd.KeyIsPressed(VK_LEFT)) {
 		gun.UpdateGun(-1, dt);
+	}
+
+	/* Update all bullet positions */
+	for (int i = 0; i < MaxBullets; i++) {
+		if (bullets[i].isActive) {
+			bullets[i].Update(dt);
+		}
 	}
 }
 
@@ -87,14 +90,11 @@ void Game::ComposeFrame()
 	bkd.Draw(gfx); /* Draw the background and base */
 	gun.Draw(gfx, bkd); /* Draw the gun */
 
-	if (gameState == playingWave1) {
-		
 		/* for all the bullets, loop round and draw each one */
-		for (int i = 0; i < MaxBullets; i++) {
-			if (bullets[i].isActive) {
-				bullets[i].Draw(gfx);
-			}
+	for (int i = 0; i < MaxBullets; i++) {
+		if (bullets[i].isActive) {
+			bullets[i].Draw(gfx);
 		}
-
 	}
+	
 }
