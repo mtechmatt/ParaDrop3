@@ -22,12 +22,14 @@
 #include "Game.h"
 #include "SpriteCodex.h"
 #include "Background.h"
+#include "Gun.H"
 
 Game::Game( MainWindow& wnd )
 	:
 	wnd( wnd ),
 	gfx( wnd ),
-	bkd()
+	bkd(),
+	gun()
 
 	//soundPad( L"Sounds\\arkpad.wav" ),
 	//pad( Vec2( 400.0f,550.0f ),32.0f,6.0f ),
@@ -42,7 +44,7 @@ void Game::Go()
 	float elapsedTime = ft.Mark();
 	while( elapsedTime > 0.0f )
 	{
-		const float dt = std::min( 0.0025f,elapsedTime );
+		const float dt = std::min( 0.0010f,elapsedTime );
 		UpdateModel( dt );
 		elapsedTime -= dt;
 	}
@@ -52,7 +54,7 @@ void Game::Go()
 
 void Game::UpdateModel( float dt )
 {
-
+	gun.UpdateGun(wnd.kbd, dt);
 }
 
 
@@ -60,5 +62,6 @@ void Game::ComposeFrame()
 {
 	if (gameState == playingWave1) {
 		bkd.Draw(gfx);
+		gun.Draw(gfx, bkd);
 	}
 }
