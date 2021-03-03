@@ -1,6 +1,7 @@
 #pragma once
 #include "Graphics.h"
 #include "Keyboard.h"
+#include "Colors.h"
 #include "Background.h"
 #include "Location.h"
 
@@ -8,7 +9,7 @@ class Gun
 {
 public:
 	void Draw(Graphics& gfx, Background& bkd);
-	void UpdateGun(Keyboard& kbd, float dt);
+	void UpdateGun(int dir, float dt);
 	int GetGunAngle();
 	int GetGunTipX();
 	int GetGunTipY();

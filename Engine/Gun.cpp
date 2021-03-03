@@ -2,8 +2,6 @@
 	Handles all of the gun drawing and movement */
 
 #include "Gun.H"
-#include "Background.h"
-#include "Colors.h"
 
 void Gun::Draw(Graphics & gfx, Background & bkd)
 {
@@ -32,15 +30,15 @@ void Gun::Draw(Graphics & gfx, Background & bkd)
 	gunTip.y = gunEndY;
 }
 
-void Gun::UpdateGun(Keyboard & kbd, float dt)
+void Gun::UpdateGun(int dir, float dt)
 {
 	/* Move the guns angle based on the tiom,e passed and the key pressed 
 		Trap angle limits also */
-	if (kbd.KeyIsPressed( VK_LEFT) && angle > -89 ){
+	if ((dir==-1) && angle > -89 ){
 		angle = angle - (gunMoveStep*dt);
 		}
 
-	if (kbd.KeyIsPressed(VK_RIGHT) && angle < 89) {
+	if ((dir==1) && angle < 89) {
 		angle = angle + (gunMoveStep*dt);
 	}
 }

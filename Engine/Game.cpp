@@ -58,8 +58,7 @@ void Game::UpdateModel( float dt )
 {
 	if (gameState == playingWave1) {	/* We are playing the game */
 		/* check for I/O and move the gun if needed */
-		gun.UpdateGun(wnd.kbd, dt);
-
+		
 		for (int i=0; i < MaxBullets; i++) {
 			if (bullets[i].isActive) {
 			  bullets[i].Update(dt);
@@ -74,16 +73,23 @@ void Game::UpdateModel( float dt )
 		}
 		bullets[bulletCounter].Create(gun.GetGunTipX(), gun.GetGunTipY(), gun.GetGunAngle()); /* Create/activate a bullet */
 	}
+	if (wnd.kbd.KeyIsPressed(VK_RIGHT)) {
+		gun.UpdateGun(1, dt);
+	}
+	else if (wnd.kbd.KeyIsPressed(VK_LEFT)) {
+		gun.UpdateGun(-1, dt);
+	}
 }
 
 
 void Game::ComposeFrame()
 {
-
-	bkd.Draw(gfx);
-	gun.Draw(gfx, bkd);
+	bkd.Draw(gfx); /* Draw the background and base */
+	gun.Draw(gfx, bkd); /* Draw the gun */
 
 	if (gameState == playingWave1) {
+		
+		/* for all the bullets, loop round and draw each one */
 		for (int i = 0; i < MaxBullets; i++) {
 			if (bullets[i].isActive) {
 				bullets[i].Draw(gfx);
