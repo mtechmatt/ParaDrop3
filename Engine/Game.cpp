@@ -21,16 +21,19 @@
 #include "MainWindow.h"
 #include "Game.h"
 #include "SpriteCodex.h"
+#include "Background.h"
 
 Game::Game( MainWindow& wnd )
 	:
 	wnd( wnd ),
-	gfx( wnd )
+	gfx( wnd ),
+	bkd()
 
 	//soundPad( L"Sounds\\arkpad.wav" ),
 	//pad( Vec2( 400.0f,550.0f ),32.0f,6.0f ),
 	//lifeCounter( { 30.0f,30.0f },3 )
 {
+	
 }
 
 void Game::Go()
@@ -56,6 +59,6 @@ void Game::UpdateModel( float dt )
 void Game::ComposeFrame()
 {
 	if (gameState == playingWave1) {
-
+		bkd.Draw(gfx);
 	}
 }

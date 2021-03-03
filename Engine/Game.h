@@ -24,6 +24,7 @@
 #include "Mouse.h"
 #include "Graphics.h"
 #include "FrameTimer.h"
+#include "Background.h"
 
 class Game
 {
@@ -45,6 +46,9 @@ private:
 	/*  User Variables              */
 	FrameTimer ft;
 	/********************************/
+
+	Background bkd;
+
 	enum e_gameState{startTitle, endTitle, preStartTimer, playingWave1, playingWave2};
 	e_gameState gameState = playingWave1;
 };
