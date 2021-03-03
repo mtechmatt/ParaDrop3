@@ -15,5 +15,5 @@ private:
 	int gunBaseX;
 	int gunBaseY;
 	int barrelLength = 35;
-	float gunMoveStep = 50;
+	float gunMoveStep = 75;
 };
