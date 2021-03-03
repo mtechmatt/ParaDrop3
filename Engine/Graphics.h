@@ -67,6 +67,7 @@ public:
 	void DrawIsoRightTriUR( int x,int y,int size,Color c );
 	void DrawIsoRightTriBL( int x,int y,int size,Color c );
 	void DrawIsoRightTriBR( int x,int y,int size,Color c );
+	void Graphics::DrawLine(int x0, int y0, int x1, int y1, Color color);
 	~Graphics();
 	static RectF GetScreenRect();
 private:
