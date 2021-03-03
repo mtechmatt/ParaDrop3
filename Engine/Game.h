@@ -27,6 +27,7 @@
 #include "Background.h"
 #include "Gun.H"
 #include "Bullet.h"
+#include "Sound.h"
 
 class Game
 {
@@ -60,4 +61,6 @@ private:
 
 	enum e_gameState{startTitle, endTitle, preStartTimer, playingWave1, playingWave2};
 	e_gameState gameState = playingWave1;
+
+	Sound soundGunFire;
 };

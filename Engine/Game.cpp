@@ -29,9 +29,8 @@ Game::Game( MainWindow& wnd )
 	wnd( wnd ),
 	gfx( wnd ),
 	bkd(),
-	gun()
-
-	//soundPad( L"Sounds\\arkpad.wav" ),
+	gun(),
+	soundGunFire( L"Sounds\\arkbrick.wav" )
 {
 	for (int i = 0; i < MaxBullets; i++) {	/* Prep the bullets */
 		bullets[i].isActive = false;
@@ -65,7 +64,8 @@ void Game::UpdateModel( float dt )
 		}
 		bullets[bulletCounter].Create(gun.GetGunTipX(), gun.GetGunTipY(), gun.GetGunAngle()); /* Create/activate a bullet */
 		bulletCounter++;
-		fireRateET = 0;  // Reset the firerate timer
+		fireRateET = 0;  /* Reset the firerate timer */
+		soundGunFire.Play(); /* Play sound of gun */
 	}
 
 	if (wnd.kbd.KeyIsPressed(VK_RIGHT)) {
@@ -89,7 +89,7 @@ void Game::ComposeFrame()
 	bkd.Draw(gfx); /* Draw the background and base */
 	gun.Draw(gfx, bkd); /* Draw the gun */
 
-		/* for all the bullets, loop round and draw each one */
+	/* for all the bullets, loop round and draw each one */
 	for (int i = 0; i < MaxBullets; i++) {
 		if (bullets[i].isActive) {
 			bullets[i].Draw(gfx);
