@@ -50,9 +50,11 @@ private:
 	/********************************/
 
 	static constexpr int MaxBullets = 50;
+	static constexpr float FireInterval = 0.3f;  /* the minimum time between firing - lower = higher RPM */
 
 	Background bkd;
 	Gun gun;
+	
 	Bullet bullets[MaxBullets]; //Create 500 bullet holders
 	int bulletCounter = 0;
 

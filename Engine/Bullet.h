@@ -21,5 +21,5 @@ private:
 	float posY;
 	float velX;			//Velocity in the X direction
 	float velY;			//Velocity in the Y direction
-	int velMultiplier = 100;  //A mupltier we can mess with
+	int velMultiplier = 150;  //A mupltier we can mess with
 };

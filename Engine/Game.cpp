@@ -32,8 +32,6 @@ Game::Game( MainWindow& wnd )
 	gun()
 
 	//soundPad( L"Sounds\\arkpad.wav" ),
-	//pad( Vec2( 400.0f,550.0f ),32.0f,6.0f ),
-	//lifeCounter( { 30.0f,30.0f },3 )
 {
 	for (int i = 0; i < MaxBullets; i++) {	/* Prep the bullets */
 		bullets[i].isActive = false;
@@ -44,8 +42,6 @@ void Game::Go()
 {
 	gfx.BeginFrame();
 	float elapsedTime = ft.Mark();
-
-
 
 	while( elapsedTime > 0.0f )
 	{
@@ -60,13 +56,16 @@ void Game::Go()
 
 void Game::UpdateModel( float dt )
 {
+	static float fireRateET;  /* Track fire rate for the gun */
+	fireRateET += dt;
 
-	if (wnd.kbd.KeyIsPressed(VK_SPACE)) {  /* TODO make this timer spaced */
+	if ((wnd.kbd.KeyIsPressed(VK_SPACE)) && (fireRateET > FireInterval)) {  /* Cionsider fire rate also */
 		if (bulletCounter > MaxBullets) {
 			bulletCounter = 0;
 		}
 		bullets[bulletCounter].Create(gun.GetGunTipX(), gun.GetGunTipY(), gun.GetGunAngle()); /* Create/activate a bullet */
 		bulletCounter++;
+		fireRateET = 0;  // Reset the firerate timer
 	}
 
 	if (wnd.kbd.KeyIsPressed(VK_RIGHT)) {
