@@ -42,11 +42,13 @@ void Game::Go()
 {
 	gfx.BeginFrame();
 	float elapsedTime = ft.Mark();
+
 	while( elapsedTime > 0.0f )
 	{
 		const float dt = std::min( 0.0010f,elapsedTime );
 		UpdateModel( dt );
 		elapsedTime -= dt;
+
 	}
 	ComposeFrame();
 	gfx.EndFrame();
@@ -54,14 +56,39 @@ void Game::Go()
 
 void Game::UpdateModel( float dt )
 {
-	gun.UpdateGun(wnd.kbd, dt);
+	if (gameState == playingWave1) {	/* We are playing the game */
+		/* check for I/O and move the gun if needed */
+		gun.UpdateGun(wnd.kbd, dt);
+
+		for (int i=0; i < MaxBullets; i++) {
+			if (bullets[i].isActive) {
+			  bullets[i].Update(dt);
+			}	
+		}
+	}
+
+	if (wnd.kbd.KeyIsPressed(VK_SPACE)) {  /* TODO make this timer spaced */
+		bulletCounter++;
+		if (bulletCounter > MaxBullets) {
+			bulletCounter = 0;
+		}
+		bullets[bulletCounter].Create(gun.GetGunTipX(), gun.GetGunTipY(), gun.GetGunAngle()); /* Create/activate a bullet */
+	}
 }
 
 
 void Game::ComposeFrame()
 {
+
+	bkd.Draw(gfx);
+	gun.Draw(gfx, bkd);
+
 	if (gameState == playingWave1) {
-		bkd.Draw(gfx);
-		gun.Draw(gfx, bkd);
+		for (int i = 0; i < MaxBullets; i++) {
+			if (bullets[i].isActive) {
+				bullets[i].Draw(gfx);
+			}
+		}
+
 	}
 }

@@ -28,8 +28,8 @@ void Gun::Draw(Graphics & gfx, Background & bkd)
 	gfx.DrawLine(gunBaseX + 1, gunBaseY + 1, (int)gunEndX + 1, (int)gunEndY + 1, Colors::Gray);
 	gfx.DrawLine(gunBaseX - 1, gunBaseY - 1, (int)gunEndX - 1, (int)gunEndY - 1, Colors::Gray);
 	//Set the Gun Tip lcoation as this will be a spawnpoint for the bullets.
-	gunTipX = gunEndX;
-	gunTipY = gunEndY;
+	gunTip.x = gunEndX;
+	gunTip.y = gunEndY;
 }
 
 void Gun::UpdateGun(Keyboard & kbd, float dt)
@@ -43,4 +43,19 @@ void Gun::UpdateGun(Keyboard & kbd, float dt)
 	if (kbd.KeyIsPressed(VK_RIGHT) && angle < 89) {
 		angle = angle + (gunMoveStep*dt);
 	}
+}
+
+int Gun::GetGunAngle()
+{
+	return (int)angle;
+}
+
+int Gun::GetGunTipX()
+{
+	return gunTip.x;
+}
+
+int Gun::GetGunTipY()
+{
+	return gunTip.y;
 }

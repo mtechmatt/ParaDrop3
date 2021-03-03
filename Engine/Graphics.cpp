@@ -341,20 +341,17 @@ void Graphics::DrawRect( int x0,int y0,int x1,int y1,Color c )
 	}
 }
 
-void Graphics::DrawCircle( int x,int y,int radius,Color c )
+void Graphics::DrawCircle(int x, int y, int r, Color c)
 {
-	const int rad_sq = radius * radius;
-	for( int y_loop = y - radius + 1; y_loop < y + radius; y_loop++ )
-	{		
-		for( int x_loop = x - radius + 1; x_loop < x + radius; x_loop++ )
-		{
-			const int x_diff = x - x_loop;
-			const int y_diff = y - y_loop;
-			if( x_diff * x_diff + y_diff * y_diff <= rad_sq )
-			{
-				PutPixel( x_loop,y_loop,c );
-			}
-		}
+	static const double PI = 3.1415926535;
+	double i, angle, x1, y1;
+
+	for (i = 0; i < 360; i += 0.1)
+	{
+		angle = i;
+		x1 = r * cos(angle * PI / 180);
+		y1 = r * sin(angle * PI / 180);
+		PutPixel(x + x1, y + y1, c);
 	}
 }
 

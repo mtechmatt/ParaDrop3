@@ -26,6 +26,7 @@
 #include "FrameTimer.h"
 #include "Background.h"
 #include "Gun.H"
+#include "Bullet.h"
 
 class Game
 {
@@ -48,8 +49,12 @@ private:
 	FrameTimer ft;
 	/********************************/
 
+	static constexpr int MaxBullets = 50;
+
 	Background bkd;
 	Gun gun;
+	Bullet bullets[MaxBullets]; //Create 500 bullet holders
+	int bulletCounter = 0;
 
 	enum e_gameState{startTitle, endTitle, preStartTimer, playingWave1, playingWave2};
 	e_gameState gameState = playingWave1;
