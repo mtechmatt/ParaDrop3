@@ -28,6 +28,7 @@
 #include "Gun.H"
 #include "Bullet.h"
 #include "Sound.h"
+#include "ParaTrooper.h"
 
 class Game
 {
@@ -52,13 +53,15 @@ private:
 
 	static constexpr int MaxBullets = 50;
 	static constexpr float FireInterval = 0.3f;  /* the minimum time between firing - lower = higher RPM */
+	Bullet bullets[MaxBullets]; //Create 500 bullet holders
+	int bulletCounter = 0;
+
+	static constexpr int MaxTroopers = 50;
+	Paratrooper troopers[MaxTroopers];
 
 	Background bkd;
 	Gun gun;
 	
-	Bullet bullets[MaxBullets]; //Create 500 bullet holders
-	int bulletCounter = 0;
-
 	enum e_gameState{startTitle, endTitle, preStartTimer, playingWave1, playingWave2};
 	e_gameState gameState = playingWave1;
 

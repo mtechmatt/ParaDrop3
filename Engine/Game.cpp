@@ -36,6 +36,9 @@ Game::Game( MainWindow& wnd )
 	for (int i = 0; i < MaxBullets; i++) {	/* Prep the bullets */
 		bullets[i].isActive = false;
 	}
+	for (int i = 0; i < 50; i++) {
+		troopers[i].MadeIt = false; /* triger the construction of our troopers */
+	}
 }
 
 void Game::Go()
@@ -67,6 +70,9 @@ void Game::UpdateModel( float dt )
 		bulletCounter++;
 		fireRateET = 0;  /* Reset the firerate timer */
 		soundGunFire.Play(); /* Play sound of gun */
+
+
+
 	}
 
 	if (wnd.kbd.KeyIsPressed(VK_RIGHT)) {
@@ -75,6 +81,7 @@ void Game::UpdateModel( float dt )
 	else if (wnd.kbd.KeyIsPressed(VK_LEFT)) {
 		gun.UpdateGun(-1, dt);
 	}
+	
 
 	/* Update any bullets that are in flight */
 	/* Note the bullet object will kill any bullets that leave the screen for us. */
@@ -92,10 +99,26 @@ void Game::UpdateModel( float dt )
 	}
 
 	/* Update paratroopers falling to earth */
+	for (Paratrooper& p : troopers) {
+		if (p.isActive) {
+			p.Update(dt);
+		}
+	}
+
 
 	/* Update the movement of any aircraft */
+	/* For each a/.c in flight, chek the spawn interval array (random a bit) and then deploy a trooper from the a/c */
 
+	
 	/* Do random spawning of aircraft */
+
+
+	
+	/**** TEST CODE BELOW ***/
+	/* Random Para Spawner */
+	static float paraSpawnRateET;  /* Track spawn interval for paratroopers */
+	paraSpawnRateET += dt;
+
 
 }
 
@@ -113,8 +136,13 @@ void Game::ComposeFrame()
 	}
 
 	/* Draw any paratroopers that need to be drawn */
-
+	for (Paratrooper& p : troopers) {
+		if (p.isActive) {
+			p.Draw(gfx);
+		}
+	}
 
 	/* Draw any aircraft that are in flight */
 	
+
 }

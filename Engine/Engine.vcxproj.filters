@@ -78,6 +78,9 @@
     <ClInclude Include="Location.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ParaTrooper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DXErr.cpp">
@@ -123,6 +126,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Bullet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ParaTrooper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
