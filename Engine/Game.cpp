@@ -23,6 +23,7 @@
 #include "SpriteCodex.h"
 #include "Background.h"
 #include "Gun.H"
+#include "Bullet.h"
 
 Game::Game( MainWindow& wnd )
 	:
@@ -75,12 +76,27 @@ void Game::UpdateModel( float dt )
 		gun.UpdateGun(-1, dt);
 	}
 
-	/* Update all bullet positions */
-	for (int i = 0; i < MaxBullets; i++) {
-		if (bullets[i].isActive) {
-			bullets[i].Update(dt);
+	/* Update any bullets that are in flight */
+	/* Note the bullet object will kill any bullets that leave the screen for us. */
+	for (Bullet& b : bullets) {
+		if (b.isActive) {
+			b.Update(dt);
+
+			/* Check for collision with any paratroppers */
+
+
+			/* Check for collision with any aircraft */
+
+
 		}
 	}
+
+	/* Update paratroopers falling to earth */
+
+	/* Update the movement of any aircraft */
+
+	/* Do random spawning of aircraft */
+
 }
 
 
@@ -89,11 +105,16 @@ void Game::ComposeFrame()
 	bkd.Draw(gfx); /* Draw the background and base */
 	gun.Draw(gfx, bkd); /* Draw the gun */
 
-	/* for all the bullets, loop round and draw each one */
-	for (int i = 0; i < MaxBullets; i++) {
-		if (bullets[i].isActive) {
-			bullets[i].Draw(gfx);
+	/* Draw any bullets that are in flight */
+	for (const Bullet& b : bullets) {
+		if (b.isActive) {
+			b.Draw(gfx);
 		}
 	}
+
+	/* Draw any paratroopers that need to be drawn */
+
+
+	/* Draw any aircraft that are in flight */
 	
 }
