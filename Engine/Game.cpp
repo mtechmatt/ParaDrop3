@@ -31,13 +31,19 @@ Game::Game( MainWindow& wnd )
 	soundGunFire( L"Sounds\\arkbrick.wav" ),
 	rng(rd()),
 	xDist(0, Graphics::ScreenWidth),
-	yDist(0, Graphics::ScreenHeight)
+	yDist(0, Graphics::ScreenHeight),
+	spACtimer(6.5,9),
+	spACVelocity(130,190),
+	spParaInterval(2.7,4.1)
 {
 	for (int i = 0; i < MaxBullets; i++) {	/* Prep the bullets */
 		bullets[i].isActive = false;
 	}
-	for (int i = 0; i < 50; i++) {
+	for (int i = 0; i < MaxTroopers; i++) {
 		troopers[i].MadeIt = false; /* triger the construction of our troopers */
+	}
+	for (int i = 0; i < MaxAircraft; i++) {
+		planes[i].isActive = false; /* triger the construction of our aircraft */
 	}
 }
 
@@ -107,21 +113,80 @@ void Game::UpdateModel( float dt )
 		}
 	}
 
-
 	/* Update the movement of any aircraft */
 	/* For each a/.c in flight, chek the spawn interval array (random a bit) and then deploy a trooper from the a/c */
-
+	for (Aircraft& p : planes) {
+		if (p.isActive) {
+			p.Update(dt);
+		}
+	}
 	
+	/*** PLANE SPAWNER ***/
 	/* Do random spawning of aircraft */
+	static float planesSpawnRateET;  /* Track spawn interval for planes  */
+	planesSpawnRateET += dt;
+	if (planesSpawnRateET > spACtimer(rng)) {	/*1.5 seconds has elapsed */
+		Vec2 SpawnPoint;
+		
+		float SpawnVel = 0.0f;
+		/* Spawn Left or Spawn Right */
+		if (xDist(rng) > (0.5*Graphics::ScreenWidth)) {  // Spawn Right, fly left
+			SpawnPoint.x = Graphics::ScreenWidth - 250;
+			SpawnPoint.y = 100;
+			SpawnVel = -spACVelocity(rng);
+		}
+		else { /* Spawn on the left, fly right */
+			SpawnPoint.x = 150;
+			SpawnPoint.y = 300;
+			SpawnVel = spACVelocity(rng);
+		}
+
+		planesInFlight++;
+
+		if (planesInFlight++ > MaxAircraft) {
+			planesInFlight = 0;
+		}
 
 
+
+		planes[planesInFlight].Deploy(SpawnPoint, SpawnVel);
+		planesSpawnRateET = 0;
+	}
+
+
+	/*** Para Spawner ***/
+	static float paraSpawnRateET[MaxAircraft];  /* Track spawn interval for paratroopers for all aircraft */
+	/* go round each aircraft, if active, check the ET, and spawn */
+	for (int i=0; i < MaxAircraft; i++) {
+		if (planes[i].isActive) {   //This plane is flying
+			/* increase its ET */
+			paraSpawnRateET[i] += dt;
+			if (paraSpawnRateET[i] > spParaInterval(rng)) {  // Spawn a trooper from an a/c every 0.9 seconds
+				paraSpawnRateET[i] = 0; //reset its ET
+				Vec2 ParaSP;
+				ParaSP.x = planes[i].GetX();	/* set our paras spwan to the aircraft */
+				ParaSP.y = planes[i].GetY();
+				if (planes[i].GetVel() > 0) {  /* flying right*/
+					troopersInAction++;
+					troopers[troopersInAction].Deploy(ParaSP, 0.5, 1200);
+				}
+				else {   /* flying left*/
+					troopersInAction++;
+					troopers[troopersInAction].Deploy(ParaSP, -0.5, 1200);
+				}
+				if (troopersInAction > MaxTroopers) {
+					troopersInAction = 0;
+				}
+
+			}
+
+		}
+
+
+	}
 	
-	/**** TEST CODE BELOW ***/
-	/* Random Para Spawner */
-	static float paraSpawnRateET;  /* Track spawn interval for paratroopers */
-	paraSpawnRateET += dt;
-
-	if (paraSpawnRateET > 1.5f) {	/*1.5 seconds has elapsed */
+	/*
+	if (paraSpawnRateET > 1008.5f) {
 		Vec2 SpawnPoint;
 		SpawnPoint.y = 100;
 		SpawnPoint.x = xDist(rng);
@@ -129,7 +194,7 @@ void Game::UpdateModel( float dt )
 		troopers[troopersInAction].Deploy(SpawnPoint, 0.3, 1200);
 		paraSpawnRateET = 0;
 	}
-
+	*/
 	
 
 }
@@ -155,6 +220,10 @@ void Game::ComposeFrame()
 	}
 
 	/* Draw any aircraft that are in flight */
-	
+	for (Aircraft& a : planes) {
+		if (a.isActive) {
+			a.Draw(gfx);
+		}
+	}
 
 }

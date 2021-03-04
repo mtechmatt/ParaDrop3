@@ -81,6 +81,9 @@
     <ClInclude Include="ParaTrooper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Aircraft.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DXErr.cpp">
@@ -129,6 +132,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ParaTrooper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Aircraft.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

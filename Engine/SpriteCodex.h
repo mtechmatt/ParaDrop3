@@ -19,4 +19,7 @@ public:
 
 	static void SpriteCodex::DrawPara(const Vec2& center, Graphics& gfx);
 	static void SpriteCodex::DrawParaNoChute(const Vec2& center, Graphics& gfx);
+
+	static void SpriteCodex::DrawBomberR1(const Vec2& centre, Graphics& gfx);
+	static void SpriteCodex::DrawBomberL1(const Vec2& centre, Graphics& gfx);
 };

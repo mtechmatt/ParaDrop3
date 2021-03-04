@@ -30,6 +30,7 @@
 #include "Sound.h"
 #include "ParaTrooper.h"
 #include "SpriteCodex.h"
+#include "Aircraft.h"
 #include <random>
 
 class Game
@@ -59,6 +60,10 @@ private:
 	std::uniform_real_distribution<float> xDist;
 	std::uniform_real_distribution<float> yDist;
 
+	std::uniform_real_distribution<float> spACtimer;
+	std::uniform_real_distribution<float> spACVelocity;
+	std::uniform_real_distribution<float> spParaInterval;
+
 
 	static constexpr int MaxBullets = 50;
 	static constexpr float FireInterval = 0.3f;  /* the minimum time between firing - lower = higher RPM */
@@ -68,6 +73,11 @@ private:
 	static constexpr int MaxTroopers = 50;
 	Paratrooper troopers[MaxTroopers];
 	int troopersInAction = 0;
+
+	static constexpr int MaxAircraft = 15;
+	Aircraft planes[MaxAircraft];
+	int planesInFlight = 0;
+
 
 	Background bkd;
 	Gun gun;
