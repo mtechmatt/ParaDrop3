@@ -94,4 +94,8 @@ private:
 	Sound soundJump2;
 	Sound soundJump3;
 	Sound soundJump4;
+	Sound soundExplode1;
+
+	Sound Splat1;
+
 };

@@ -2,6 +2,7 @@
 #include "Vec2.h"
 #include "SpriteCodex.h"
 #include "Graphics.h"
+#include "Bullet.h"
 
 class Paratrooper {
 public:
@@ -11,6 +12,7 @@ public:
 	void Update(float dt);
 	bool MadeIt = false;
 	bool isActive = false;
+	bool isHitting(Bullet& bullet);
 
 private:
 	int dropRate = 35;

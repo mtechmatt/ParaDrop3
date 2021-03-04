@@ -38,6 +38,26 @@ void Aircraft::Update(float dt)
 
 }
 
+bool Aircraft::isHitting(Bullet & bullet)
+{
+	/* I have been passed a bullet.
+		is it touching me? */
+	if (bullet.isActive) {
+		/* its active, OK lets see if its on us */
+		/* we have my position (position) and we know the bullets size. We also need to set that bullet to not active if contact */
+		if ((bullet.posX>position.x) &&
+			(bullet.posY>position.y) &&
+			(bullet.posX<position.x+250) &&
+			(bullet.posY<position.y+80)
+			) {   
+ 				bullet.isActive = false;
+				isActive = false; //also kill myself
+				return true;
+		}
+	}	
+	return false;
+}
+
 int Aircraft::GetX()
 {
 	return (int)position.x;

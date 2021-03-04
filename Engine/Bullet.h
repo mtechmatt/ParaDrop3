@@ -15,11 +15,11 @@ public:
 public:
 	//Location locBullet;		//Every bullet has a location
 	bool isActive = false;  //Should this bullet be updated/displayed/travelling?  
-
-private:
 	float posX;
 	float posY;
+private:
+
 	float velX;			//Velocity in the X direction
 	float velY;			//Velocity in the Y direction
-	int velMultiplier = 150;  //A mupltier we can mess with
+	int velMultiplier = 250;  //A mupltier we can mess with
 };

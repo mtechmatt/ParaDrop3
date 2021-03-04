@@ -33,6 +33,8 @@ Game::Game( MainWindow& wnd )
 	soundJump2(L"Sounds\\jump2.wav"),
 	soundJump3(L"Sounds\\jump3.wav"),
 	soundJump4(L"Sounds\\jump4.wav"),
+	soundExplode1(L"Sounds\\explode1.wav"),
+	Splat1(L"Sounds\\splat1.wav"),
 	rng(rd()),
 	xDist(0, Graphics::ScreenWidth),
 	yDist(0, Graphics::ScreenHeight),
@@ -104,10 +106,28 @@ void Game::UpdateModel( float dt )
 
 
 			/* Check for collision with any aircraft */
-
-
+			for (Aircraft& p : planes) {
+				if (p.isActive) {
+					for (Bullet& b : bullets) {  //Check with all the bullets for THIS aircraft if we are hitting
+						if (p.isHitting(b)) {
+							soundExplode1.Play();
+						}
+					}
+				}
+			}
+			
+			for (Paratrooper& pt : troopers) {
+				if (pt.isActive) {
+					for (Bullet& b : bullets) {  //Check with all the bullets for THIS aircraft if we are hitting
+						if (pt.isHitting(b)) {
+							Splat1.Play();
+						}
+					}
+				}
+			}
 		}
 	}
+
 
 	/* Update paratroopers falling to earth */
 	for (Paratrooper& p : troopers) {
@@ -121,8 +141,15 @@ void Game::UpdateModel( float dt )
 	for (Aircraft& p : planes) {
 		if (p.isActive) {
 			p.Update(dt);
+
+			for (Bullet& b : bullets) {  //Check with all the bullets for THIS aircraft if we are hitting
+				bool isHit = p.isHitting(b);
+
+			}
 		}
+
 	}
+	
 	
 	/*** PLANE SPAWNER ***/
 	/* Do random spawning of aircraft */
