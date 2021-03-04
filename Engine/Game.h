@@ -43,6 +43,7 @@ public:
 private:
 	void ComposeFrame();
 	void UpdateModel( float dt );
+	void PlayRandomJumpSound();
 	/********************************/
 	/*  User Functions              */
 	/********************************/
@@ -64,6 +65,7 @@ private:
 	std::uniform_real_distribution<float> spACVelocity;
 	std::uniform_real_distribution<float> spParaInterval;
 
+	std::uniform_real_distribution<float> whichSound;
 
 	static constexpr int MaxBullets = 50;
 	static constexpr float FireInterval = 0.3f;  /* the minimum time between firing - lower = higher RPM */
@@ -85,5 +87,11 @@ private:
 	enum e_gameState{startTitle, endTitle, preStartTimer, playingWave1, playingWave2};
 	e_gameState gameState = playingWave1;
 
+
+
 	Sound soundGunFire;
+	Sound soundJump1;
+	Sound soundJump2;
+	Sound soundJump3;
+	Sound soundJump4;
 };

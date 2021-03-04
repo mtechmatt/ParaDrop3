@@ -28,13 +28,20 @@ Game::Game( MainWindow& wnd )
 	gfx( wnd ),
 	bkd(),
 	gun(),
-	soundGunFire( L"Sounds\\arkbrick.wav" ),
+	soundGunFire( L"Sounds\\wahoo3.wav" ),
+	soundJump1(L"Sounds\\jump1.wav"),
+	soundJump2(L"Sounds\\jump2.wav"),
+	soundJump3(L"Sounds\\jump3.wav"),
+	soundJump4(L"Sounds\\jump4.wav"),
 	rng(rd()),
 	xDist(0, Graphics::ScreenWidth),
 	yDist(0, Graphics::ScreenHeight),
+
 	spACtimer(6.5,9),
 	spACVelocity(130,190),
-	spParaInterval(2.7,4.1)
+	spParaInterval(2.7,4.1),
+	whichSound(1,4)
+
 {
 	for (int i = 0; i < MaxBullets; i++) {	/* Prep the bullets */
 		bullets[i].isActive = false;
@@ -51,8 +58,6 @@ void Game::Go()
 {
 	gfx.BeginFrame();
 	float elapsedTime = ft.Mark();
-
-	srand((unsigned)time(0));
 
 	while( elapsedTime > 0.0f )
 	{
@@ -78,8 +83,6 @@ void Game::UpdateModel( float dt )
 		bulletCounter++;
 		fireRateET = 0;  /* Reset the firerate timer */
 		soundGunFire.Play(); /* Play sound of gun */
-
-
 
 	}
 
@@ -169,10 +172,12 @@ void Game::UpdateModel( float dt )
 				if (planes[i].GetVel() > 0) {  /* flying right*/
 					troopersInAction++;
 					troopers[troopersInAction].Deploy(ParaSP, 0.5, 1200);
+					PlayRandomJumpSound();
 				}
 				else {   /* flying left*/
 					troopersInAction++;
 					troopers[troopersInAction].Deploy(ParaSP, -0.5, 1200);
+					PlayRandomJumpSound();
 				}
 				if (troopersInAction > MaxTroopers) {
 					troopersInAction = 0;
@@ -183,20 +188,27 @@ void Game::UpdateModel( float dt )
 		}
 
 
-	}
-	
-	/*
-	if (paraSpawnRateET > 1008.5f) {
-		Vec2 SpawnPoint;
-		SpawnPoint.y = 100;
-		SpawnPoint.x = xDist(rng);
-		troopersInAction++;
-		troopers[troopersInAction].Deploy(SpawnPoint, 0.3, 1200);
-		paraSpawnRateET = 0;
-	}
-	*/
-	
+	}	
 
+}
+
+void Game::PlayRandomJumpSound() {
+
+	int stoplay = whichSound(rng);
+	switch ((int)stoplay) {
+	case 1:
+		soundJump1.Play();
+		break;
+	case 2:
+		soundJump2.Play();
+		break;
+	case 3:
+		soundJump3.Play();
+		break;
+	case 4:
+		soundJump4.Play();
+		break;
+	}
 }
 
 
