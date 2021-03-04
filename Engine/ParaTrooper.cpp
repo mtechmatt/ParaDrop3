@@ -23,13 +23,18 @@ void Paratrooper::Update(float dt)
 	/* move him down the screen - if he is at ground level, stop moving him, remove his chute */
 	if (isActive) {
 		if (position.y >= groundLevel) {  /* He is at the ground */
+			
 			/* Remove his chute - mark him as safe  */
 			MadeIt = true;
+
 		}
 		else {			/* Keep falling mate */
-			position.y += dropRate * dt;
-			position.x += xVel * dt;
+			if (!MadeIt) { /*only conitnue to fall if he isnt on the deck*/
+				position.y += dropRate * dt;
+				position.x += xVel * dt;
+			}
 		}
+
 		
 		if (position.x<24 || position.x > Graphics::ScreenWidth - 24) {
 			isActive = false;  // Hes gone off the edge

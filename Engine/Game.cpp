@@ -61,6 +61,8 @@ void Game::Go()
 	gfx.BeginFrame();
 	float elapsedTime = ft.Mark();
 
+	gameState = playingWave1;
+
 	while( elapsedTime > 0.0f )
 	{
 		const float dt = std::min( 0.011f,elapsedTime );
@@ -74,159 +76,168 @@ void Game::Go()
 
 void Game::UpdateModel( float dt )
 {
-	static float fireRateET;  /* Track fire rate for the gun */
-	fireRateET += dt;
+	switch (gameState) {
+	case playingWave1:
+		static float fireRateET;  /* Track fire rate for the gun */
+		fireRateET += dt;
 
-	/*
-	static float diffRateET;
-	diffRateET += dt;
+		/*
+		static float diffRateET;
+		diffRateET += dt;
 
-	if (diffRateET > 5.0f) {	// every 5 secoinds ramp up the aircaft speed and spawn rates
-		//diffMulti += 0.25f; 
-		diffRateET = 0;
-		if (diffMulti > 2) {
-			diffMulti = 2;
+		if (diffRateET > 5.0f) {	// every 5 secoinds ramp up the aircaft speed and spawn rates
+			//diffMulti += 0.25f;
+			diffRateET = 0;
+			if (diffMulti > 2) {
+				diffMulti = 2;
+			}
 		}
-	}
-	*/
+		*/
 
-	if ((wnd.kbd.KeyIsPressed(VK_SPACE)) && (fireRateET > FireInterval)) {  /* Cionsider fire rate also */
-		if (bulletCounter > MaxBullets) {
-			bulletCounter = 0;
+		if ((wnd.kbd.KeyIsPressed(VK_SPACE)) && (fireRateET > FireInterval)) {  /* Cionsider fire rate also */
+			if (bulletCounter > MaxBullets) {
+				bulletCounter = 0;
+			}
+			bullets[bulletCounter].Create(gun.GetGunTipX(), gun.GetGunTipY(), gun.GetGunAngle()); /* Create/activate a bullet */
+			bulletCounter++;
+			fireRateET = 0;  /* Reset the firerate timer */
+			soundGunFire.Play(); /* Play sound of gun */
+
 		}
-		bullets[bulletCounter].Create(gun.GetGunTipX(), gun.GetGunTipY(), gun.GetGunAngle()); /* Create/activate a bullet */
-		bulletCounter++;
-		fireRateET = 0;  /* Reset the firerate timer */
-		soundGunFire.Play(); /* Play sound of gun */
 
-	}
+		if (wnd.kbd.KeyIsPressed(VK_RIGHT)) {
+			gun.UpdateGun(1, dt);
+		}
+		else if (wnd.kbd.KeyIsPressed(VK_LEFT)) {
+			gun.UpdateGun(-1, dt);
+		}
 
-	if (wnd.kbd.KeyIsPressed(VK_RIGHT)) {
-		gun.UpdateGun(1, dt);
-	}
-	else if (wnd.kbd.KeyIsPressed(VK_LEFT)) {
-		gun.UpdateGun(-1, dt);
-	}
-	
+		/* Update any bullets that are in flight */
+		/* Note the bullet object will kill any bullets that leave the screen for us. */
+		for (Bullet& b : bullets) {
+			if (b.isActive) {
+				b.Update(dt);
 
-	/* Update any bullets that are in flight */
-	/* Note the bullet object will kill any bullets that leave the screen for us. */
-	for (Bullet& b : bullets) {
-		if (b.isActive) {
-			b.Update(dt);
+				/* Check for collision with any aircraft */
+				for (Aircraft& p : planes) {
+					if (p.isActive) {
+						for (Bullet& b : bullets) {  //Check with all the bullets for THIS aircraft if we are hitting
+							if (p.isHitting(b)) {
+								soundExplode1.Play();
+							}
+						}
+					}
+				}
 
-			/* Check for collision with any aircraft */
-			for (Aircraft& p : planes) {
-				if (p.isActive) {
-					for (Bullet& b : bullets) {  //Check with all the bullets for THIS aircraft if we are hitting
-						if (p.isHitting(b)) {
-							soundExplode1.Play();
+				/* Check for para collision */
+				for (Paratrooper& pt : troopers) {
+					if (pt.isActive) {
+						for (Bullet& b : bullets) {  //Check with all the bullets for THIS trooper if we are hitting
+							if (pt.isHitting(b)) {
+								Splat1.Play();
+							}
 						}
 					}
 				}
 			}
-			
-			/* Check for para collision */
-			for (Paratrooper& pt : troopers) {
-				if (pt.isActive) {
-					for (Bullet& b : bullets) {  //Check with all the bullets for THIS trooper if we are hitting
-						if (pt.isHitting(b)) {
-							Splat1.Play();
-						}
+		}
+
+		/* Update paratroopers falling to earth */
+		for (Paratrooper& p : troopers) {
+			if (p.isActive) {
+				p.Update(dt);
+			}
+
+			/* check if it has hit the ground */
+			if (p.MadeIt) {
+				gameState = gameLost;  //one has made it, we lose!
+				return;
+			}
+		}
+
+		/* Update the movement of any aircraft */
+		/* For each a/.c in flight, chek the spawn interval array (random a bit) and then deploy a trooper from the a/c */
+		for (Aircraft& p : planes) {
+			if (p.isActive) {
+				p.Update(dt);
+
+				for (Bullet& b : bullets) {  //Check with all the bullets for THIS aircraft if we are hitting
+					bool isHit = p.isHitting(b);
+
+				}
+			}
+
+		}
+
+		/*** PLANE SPAWNER ***/
+		/* Do random spawning of aircraft */
+		static float planesSpawnRateET;  /* Track spawn interval for planes  */
+		planesSpawnRateET += dt;
+		if (planesSpawnRateET > (spACtimer(rng) / diffMulti)) {	/*1.5 seconds has elapsed */
+			Vec2 SpawnPoint;
+
+			float SpawnVel = 0.0f;
+			/* Spawn Left or Spawn Right */
+			if (xDist(rng) > (0.5*Graphics::ScreenWidth)) {  // Spawn Right, fly left
+				SpawnPoint.x = Graphics::ScreenWidth - 250;
+				SpawnPoint.y = 100;
+				SpawnVel = -spACVelocity(rng)*diffMulti;
+			}
+			else { /* Spawn on the left, fly right */
+				SpawnPoint.x = 150;
+				SpawnPoint.y = 300;
+				SpawnVel = spACVelocity(rng)*diffMulti;
+			}
+
+			planesInFlight++;
+
+			if (planesInFlight++ > MaxAircraft) {
+				planesInFlight = 0;
+			}
+
+			planes[planesInFlight].Deploy(SpawnPoint, SpawnVel);
+			planesSpawnRateET = 0;
+		}
+
+		/*** Para Spawner ***/
+		static float paraSpawnRateET[MaxAircraft];  /* Track spawn interval for paratroopers for all aircraft */
+		/* go round each aircraft, if active, check the ET, and spawn */
+		for (int i = 0; i < MaxAircraft; i++) {
+			if (planes[i].isActive) {   //This plane is flying
+				/* increase its ET */
+				paraSpawnRateET[i] += dt;
+				if (paraSpawnRateET[i] > (spParaInterval(rng) / diffMulti)) {  // Spawn a trooper from an a/c every 0.9 seconds
+					paraSpawnRateET[i] = 0; //reset its ET
+					Vec2 ParaSP;
+					ParaSP.x = planes[i].GetX();	/* set our paras spwan to the aircraft */
+					ParaSP.y = planes[i].GetY();
+					if (planes[i].GetVel() > 0) {  /* flying right*/
+						troopersInAction++;
+						troopers[troopersInAction].Deploy(ParaSP, 0.9, Graphics::ScreenHeight-Background::groundHeight);
+						PlayRandomJumpSound();
 					}
-				}
-			}
-		}
-	}
+					else {   /* flying left*/
+						troopersInAction++;
+						troopers[troopersInAction].Deploy(ParaSP, -0.9, Graphics::ScreenHeight - Background::groundHeight);
+						PlayRandomJumpSound();
+					}
+					if (troopersInAction > MaxTroopers) {
+						troopersInAction = 0;
+					}
 
-
-	/* Update paratroopers falling to earth */
-	for (Paratrooper& p : troopers) {
-		if (p.isActive) {
-			p.Update(dt);
-		}
-
-		/* check if it has hit the ground */
-	}
-
-	/* Update the movement of any aircraft */
-	/* For each a/.c in flight, chek the spawn interval array (random a bit) and then deploy a trooper from the a/c */
-	for (Aircraft& p : planes) {
-		if (p.isActive) {
-			p.Update(dt);
-
-			for (Bullet& b : bullets) {  //Check with all the bullets for THIS aircraft if we are hitting
-				bool isHit = p.isHitting(b);
-
-			}
-		}
-
-	}
-	
-	
-	/*** PLANE SPAWNER ***/
-	/* Do random spawning of aircraft */
-	static float planesSpawnRateET;  /* Track spawn interval for planes  */
-	planesSpawnRateET += dt;
-	if (planesSpawnRateET > (spACtimer(rng)/diffMulti)) {	/*1.5 seconds has elapsed */
-		Vec2 SpawnPoint;
-		
-		float SpawnVel = 0.0f;
-		/* Spawn Left or Spawn Right */
-		if (xDist(rng) > (0.5*Graphics::ScreenWidth)) {  // Spawn Right, fly left
-			SpawnPoint.x = Graphics::ScreenWidth - 250;
-			SpawnPoint.y = 100;
-			SpawnVel = -spACVelocity(rng)*diffMulti;
-		}
-		else { /* Spawn on the left, fly right */
-			SpawnPoint.x = 150;
-			SpawnPoint.y = 300;
-			SpawnVel = spACVelocity(rng)*diffMulti;
-		}
-
-		planesInFlight++;
-
-		if (planesInFlight++ > MaxAircraft) {
-			planesInFlight = 0;
-		}
-
-		planes[planesInFlight].Deploy(SpawnPoint, SpawnVel);
-		planesSpawnRateET = 0;
-	}
-
-
-	/*** Para Spawner ***/
-	static float paraSpawnRateET[MaxAircraft];  /* Track spawn interval for paratroopers for all aircraft */
-	/* go round each aircraft, if active, check the ET, and spawn */
-	for (int i=0; i < MaxAircraft; i++) {
-		if (planes[i].isActive) {   //This plane is flying
-			/* increase its ET */
-			paraSpawnRateET[i] += dt;
-			if (paraSpawnRateET[i] > (spParaInterval(rng)/diffMulti)) {  // Spawn a trooper from an a/c every 0.9 seconds
-				paraSpawnRateET[i] = 0; //reset its ET
-				Vec2 ParaSP;
-				ParaSP.x = planes[i].GetX();	/* set our paras spwan to the aircraft */
-				ParaSP.y = planes[i].GetY();
-				if (planes[i].GetVel() > 0) {  /* flying right*/
-					troopersInAction++;
-					troopers[troopersInAction].Deploy(ParaSP, 0.5, 1200);
-					PlayRandomJumpSound();
-				}
-				else {   /* flying left*/
-					troopersInAction++;
-					troopers[troopersInAction].Deploy(ParaSP, -0.5, 1200);
-					PlayRandomJumpSound();
-				}
-				if (troopersInAction > MaxTroopers) {
-					troopersInAction = 0;
 				}
 
 			}
 
+
 		}
 
+		break;
+	case gameLost:
 
-	}	
+		break;
+	}
+
 
 }
 

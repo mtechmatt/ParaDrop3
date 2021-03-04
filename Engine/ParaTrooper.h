@@ -16,8 +16,8 @@ public:
 
 private:
 	int dropRate = 35;
-	int groundLevel = 200;
+	int groundLevel;
 	bool hasChute = true;
-	float xVel = 0.2;
+	float xVel;
 	Vec2 position;
 };

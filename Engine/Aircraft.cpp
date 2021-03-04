@@ -26,7 +26,7 @@ void Aircraft::Update(float dt)
 	if (isActive) {
 		if ( 
 			((xVel>0) && (position.x>Graphics::ScreenWidth-250)) ||
-			((xVel < 0) && (position.x < 250))
+			((xVel < 0) && (position.x < 10))
 			) {  /* Edge Check */
 			isActive = false;
 		}

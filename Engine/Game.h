@@ -72,7 +72,7 @@ private:
 	Bullet bullets[MaxBullets]; //Create 500 bullet holders
 	int bulletCounter = 0;
 
-	static constexpr int MaxTroopers = 50;
+	static constexpr int MaxTroopers = 150;
 	Paratrooper troopers[MaxTroopers];
 	int troopersInAction = 0;
 
@@ -84,7 +84,7 @@ private:
 	Background bkd;
 	Gun gun;
 	
-	enum e_gameState{startTitle, endTitle, preStartTimer, playingWave1, playingWave2};
+	enum e_gameState{startTitle, endTitle, preStartTimer, playingWave1, playingWave2, gameLost};
 	e_gameState gameState = playingWave1;
 
 	float diffMulti = 1;
