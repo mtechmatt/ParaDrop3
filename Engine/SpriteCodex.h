@@ -16,4 +16,7 @@ public:
 	static void SpriteCodex::DrawReady( const Vec2& center,Graphics& gfx );
 	// centered drawing of 24x24 sprite
 	static void SpriteCodex::DrawPoo( const Vec2& center,Graphics& gfx );
+
+	static void SpriteCodex::DrawPara(const Vec2& center, Graphics& gfx);
+	static void SpriteCodex::DrawParaNoChute(const Vec2& center, Graphics& gfx);
 };
