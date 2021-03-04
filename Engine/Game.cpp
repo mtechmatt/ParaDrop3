@@ -28,7 +28,7 @@ Game::Game( MainWindow& wnd )
 	gfx( wnd ),
 	bkd(),
 	gun(),
-	soundGunFire( L"Sounds\\wahoo3.wav" ),
+	soundGunFire( L"Sounds\\gunfire.wav" ),
 	soundJump1(L"Sounds\\jump1.wav"),
 	soundJump2(L"Sounds\\jump2.wav"),
 	soundJump3(L"Sounds\\jump3.wav"),
