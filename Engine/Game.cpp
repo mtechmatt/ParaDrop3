@@ -20,10 +20,7 @@
  ******************************************************************************************/
 #include "MainWindow.h"
 #include "Game.h"
-#include "SpriteCodex.h"
-#include "Background.h"
-#include "Gun.H"
-#include "Bullet.h"
+
 
 Game::Game( MainWindow& wnd )
 	:
@@ -31,7 +28,10 @@ Game::Game( MainWindow& wnd )
 	gfx( wnd ),
 	bkd(),
 	gun(),
-	soundGunFire( L"Sounds\\arkbrick.wav" )
+	soundGunFire( L"Sounds\\arkbrick.wav" ),
+	rng(rd()),
+	xDist(0, Graphics::ScreenWidth),
+	yDist(0, Graphics::ScreenHeight)
 {
 	for (int i = 0; i < MaxBullets; i++) {	/* Prep the bullets */
 		bullets[i].isActive = false;
@@ -45,6 +45,8 @@ void Game::Go()
 {
 	gfx.BeginFrame();
 	float elapsedTime = ft.Mark();
+
+	srand((unsigned)time(0));
 
 	while( elapsedTime > 0.0f )
 	{
@@ -119,6 +121,16 @@ void Game::UpdateModel( float dt )
 	static float paraSpawnRateET;  /* Track spawn interval for paratroopers */
 	paraSpawnRateET += dt;
 
+	if (paraSpawnRateET > 1.5f) {	/*1.5 seconds has elapsed */
+		Vec2 SpawnPoint;
+		SpawnPoint.y = 100;
+		SpawnPoint.x = xDist(rng);
+		troopersInAction++;
+		troopers[troopersInAction].Deploy(SpawnPoint, 0.3, 1200);
+		paraSpawnRateET = 0;
+	}
+
+	
 
 }
 
