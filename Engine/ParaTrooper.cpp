@@ -30,6 +30,10 @@ void Paratrooper::Update(float dt)
 			position.y += dropRate * dt;
 			position.x += xVel * dt;
 		}
+		
+		if (position.x<24 || position.x > Graphics::ScreenWidth - 24) {
+			isActive = false;  // Hes gone off the edge
+		}
 
 	}
 

@@ -68,7 +68,7 @@ private:
 	std::uniform_real_distribution<float> whichSound;
 
 	static constexpr int MaxBullets = 50;
-	static constexpr float FireInterval = 0.3f;  /* the minimum time between firing - lower = higher RPM */
+	static constexpr float FireInterval = 0.15f;  /* the minimum time between firing - lower = higher RPM */
 	Bullet bullets[MaxBullets]; //Create 500 bullet holders
 	int bulletCounter = 0;
 
@@ -87,7 +87,7 @@ private:
 	enum e_gameState{startTitle, endTitle, preStartTimer, playingWave1, playingWave2};
 	e_gameState gameState = playingWave1;
 
-
+	float diffMulti = 1;
 
 	Sound soundGunFire;
 	Sound soundJump1;

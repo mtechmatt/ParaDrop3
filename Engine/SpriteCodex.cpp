@@ -27984,8 +27984,8 @@ void SpriteCodex::DrawPoo( const Vec2 & center,Graphics & gfx )
 
 void SpriteCodex::DrawPara(const Vec2 & center, Graphics & gfx)
 {
-	const int x_int = int(center.x) - 20;
-	const int y_int = int(center.y) - 12;
+	const int x_int = int(center.x);
+	const int y_int = int(center.y);
 	
 	gfx.PutPixel(9 + x_int, 0 + y_int, 255, 251, 240);
 	gfx.PutPixel(10 + x_int, 0 + y_int, 160, 160, 164);

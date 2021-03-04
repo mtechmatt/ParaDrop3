@@ -39,9 +39,9 @@ Game::Game( MainWindow& wnd )
 	xDist(0, Graphics::ScreenWidth),
 	yDist(0, Graphics::ScreenHeight),
 
-	spACtimer(6.5,9),
+	spACtimer(3.5,9),
 	spACVelocity(130,190),
-	spParaInterval(2.7,4.1),
+	spParaInterval(1.1,4.1),
 	whichSound(1,4)
 
 {
@@ -77,6 +77,19 @@ void Game::UpdateModel( float dt )
 	static float fireRateET;  /* Track fire rate for the gun */
 	fireRateET += dt;
 
+	/*
+	static float diffRateET;
+	diffRateET += dt;
+
+	if (diffRateET > 5.0f) {	// every 5 secoinds ramp up the aircaft speed and spawn rates
+		//diffMulti += 0.25f; 
+		diffRateET = 0;
+		if (diffMulti > 2) {
+			diffMulti = 2;
+		}
+	}
+	*/
+
 	if ((wnd.kbd.KeyIsPressed(VK_SPACE)) && (fireRateET > FireInterval)) {  /* Cionsider fire rate also */
 		if (bulletCounter > MaxBullets) {
 			bulletCounter = 0;
@@ -102,9 +115,6 @@ void Game::UpdateModel( float dt )
 		if (b.isActive) {
 			b.Update(dt);
 
-			/* Check for collision with any paratroppers */
-
-
 			/* Check for collision with any aircraft */
 			for (Aircraft& p : planes) {
 				if (p.isActive) {
@@ -116,9 +126,10 @@ void Game::UpdateModel( float dt )
 				}
 			}
 			
+			/* Check for para collision */
 			for (Paratrooper& pt : troopers) {
 				if (pt.isActive) {
-					for (Bullet& b : bullets) {  //Check with all the bullets for THIS aircraft if we are hitting
+					for (Bullet& b : bullets) {  //Check with all the bullets for THIS trooper if we are hitting
 						if (pt.isHitting(b)) {
 							Splat1.Play();
 						}
@@ -134,6 +145,8 @@ void Game::UpdateModel( float dt )
 		if (p.isActive) {
 			p.Update(dt);
 		}
+
+		/* check if it has hit the ground */
 	}
 
 	/* Update the movement of any aircraft */
@@ -155,7 +168,7 @@ void Game::UpdateModel( float dt )
 	/* Do random spawning of aircraft */
 	static float planesSpawnRateET;  /* Track spawn interval for planes  */
 	planesSpawnRateET += dt;
-	if (planesSpawnRateET > spACtimer(rng)) {	/*1.5 seconds has elapsed */
+	if (planesSpawnRateET > (spACtimer(rng)/diffMulti)) {	/*1.5 seconds has elapsed */
 		Vec2 SpawnPoint;
 		
 		float SpawnVel = 0.0f;
@@ -163,12 +176,12 @@ void Game::UpdateModel( float dt )
 		if (xDist(rng) > (0.5*Graphics::ScreenWidth)) {  // Spawn Right, fly left
 			SpawnPoint.x = Graphics::ScreenWidth - 250;
 			SpawnPoint.y = 100;
-			SpawnVel = -spACVelocity(rng);
+			SpawnVel = -spACVelocity(rng)*diffMulti;
 		}
 		else { /* Spawn on the left, fly right */
 			SpawnPoint.x = 150;
 			SpawnPoint.y = 300;
-			SpawnVel = spACVelocity(rng);
+			SpawnVel = spACVelocity(rng)*diffMulti;
 		}
 
 		planesInFlight++;
@@ -176,8 +189,6 @@ void Game::UpdateModel( float dt )
 		if (planesInFlight++ > MaxAircraft) {
 			planesInFlight = 0;
 		}
-
-
 
 		planes[planesInFlight].Deploy(SpawnPoint, SpawnVel);
 		planesSpawnRateET = 0;
@@ -191,7 +202,7 @@ void Game::UpdateModel( float dt )
 		if (planes[i].isActive) {   //This plane is flying
 			/* increase its ET */
 			paraSpawnRateET[i] += dt;
-			if (paraSpawnRateET[i] > spParaInterval(rng)) {  // Spawn a trooper from an a/c every 0.9 seconds
+			if (paraSpawnRateET[i] > (spParaInterval(rng)/diffMulti)) {  // Spawn a trooper from an a/c every 0.9 seconds
 				paraSpawnRateET[i] = 0; //reset its ET
 				Vec2 ParaSP;
 				ParaSP.x = planes[i].GetX();	/* set our paras spwan to the aircraft */
