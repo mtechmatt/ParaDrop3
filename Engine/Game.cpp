@@ -65,7 +65,7 @@ void Game::Go()
 
 	while( elapsedTime > 0.0f )
 	{
-		const float dt = std::min( 0.011f,elapsedTime );
+		const float dt = std::min( 0.01f,elapsedTime );
 		UpdateModel( dt );
 		elapsedTime -= dt;
 
@@ -76,9 +76,14 @@ void Game::Go()
 
 void Game::UpdateModel( float dt )
 {
+	static float fireRateET;  /* Track fire rate for the gun */
+	static float planesSpawnRateET;  /* Track spawn interval for planes  */
+	static float paraSpawnRateET[MaxAircraft];  /* Track spawn interval for paratroopers for all aircraft */
+
 	switch (gameState) {
+	
 	case playingWave1:
-		static float fireRateET;  /* Track fire rate for the gun */
+
 		fireRateET += dt;
 
 		/*
@@ -171,7 +176,7 @@ void Game::UpdateModel( float dt )
 
 		/*** PLANE SPAWNER ***/
 		/* Do random spawning of aircraft */
-		static float planesSpawnRateET;  /* Track spawn interval for planes  */
+
 		planesSpawnRateET += dt;
 		if (planesSpawnRateET > (spACtimer(rng) / diffMulti)) {	/*1.5 seconds has elapsed */
 			Vec2 SpawnPoint;
@@ -200,7 +205,7 @@ void Game::UpdateModel( float dt )
 		}
 
 		/*** Para Spawner ***/
-		static float paraSpawnRateET[MaxAircraft];  /* Track spawn interval for paratroopers for all aircraft */
+
 		/* go round each aircraft, if active, check the ET, and spawn */
 		for (int i = 0; i < MaxAircraft; i++) {
 			if (planes[i].isActive) {   //This plane is flying

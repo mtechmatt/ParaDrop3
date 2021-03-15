@@ -355,6 +355,19 @@ void Graphics::DrawCircle(int x, int y, int r, Color c)
 	}
 }
 
+void Graphics::DrawSprite(int x, int y, const Surface & s)
+{
+	const int width = s.GetWidth();
+	const int height = s.GetHeight();
+	for (int sy = 0; sy < height; sy++)
+	{
+		for (int sx = 0; sx < width; sx++)
+		{
+			PutPixel(x + sx, y + sy, s.GetPixel(sx, sy));
+		}
+	}
+}
+
 void Graphics::DrawIsoRightTriUL( int x,int y,int size,Color c )
 {
 	for( int loop_y = y; loop_y < y + size; loop_y++ )

@@ -98,4 +98,6 @@ private:
 
 	Sound Splat1;
 
+	Surface surf = Surface(100, 100);
+
 };

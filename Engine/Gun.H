@@ -19,6 +19,6 @@ public:
 private:
 	int gunBaseX;
 	int gunBaseY;
-	int barrelLength = 35;
-	float gunMoveStep = 75;
+	int barrelLength = 35;  //how is this geting changed to a BS number?
+	float gunMoveStep = 55;
 };
